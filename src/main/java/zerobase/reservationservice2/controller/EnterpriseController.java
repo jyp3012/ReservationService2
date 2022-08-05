@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import zerobase.reservationservice2.model.RegEnterprise;
 import zerobase.reservationservice2.service.EnterpriseService;
 
@@ -27,5 +24,13 @@ public class EnterpriseController {
         var result = enterpriseService.register(request, authentication.getName());
 
         return ResponseEntity.ok(result);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/unregis")
+    public boolean unRegister(@RequestBody RegEnterprise.unRegEnterprise request, Authentication authentication) {
+
+        return enterpriseService.unRegister(request, authentication.getName());
+
     }
 }

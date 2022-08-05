@@ -37,9 +37,7 @@ public class RegEnterprise {
     @Data
     public static class unRegEnterprise{
 
-        private String userId;
         private String enterpriseName;
         private String enterprisePassword;
-        private Long reservedUser;
     }
 }

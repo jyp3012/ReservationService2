@@ -8,6 +8,10 @@
 
 <img width="1094" alt="스크린샷 2022-07-20 오후 6 27 06" src="https://user-images.githubusercontent.com/88446304/179953512-c7cc0f61-1580-4505-82e2-6b41f1847237.png">
 
+### DB Table 구성
+
+<img width="1502" alt="스크린샷 2022-08-05 오후 9 59 54" src="https://user-images.githubusercontent.com/88446304/183082490-a8f0bdee-b182-4dea-9721-e4342ca38be5.png">
+
 ### 사용 기술스택
 
 - Spring boot

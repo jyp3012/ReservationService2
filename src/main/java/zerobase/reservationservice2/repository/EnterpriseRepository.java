@@ -15,5 +15,7 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity, Lo
 
     Optional<EnterpriseEntity> findByUserIdAndEnterpriseName(String userId, String enterpriseName);
 
+    Optional<EnterpriseEntity> findByEnterpriseName(String enterpriseName);
+
     void deleteByUserId(String userId);
 }

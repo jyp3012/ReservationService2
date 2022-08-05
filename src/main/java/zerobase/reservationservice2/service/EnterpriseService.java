@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
 import zerobase.reservationservice2.exception.EnterpriseException;
 import zerobase.reservationservice2.exception.ErrorCode;
+import zerobase.reservationservice2.model.InquireEnterprise;
 import zerobase.reservationservice2.model.RegEnterprise;
 import zerobase.reservationservice2.repository.EnterpriseRepository;
 
@@ -31,7 +32,7 @@ public class EnterpriseService {
 
     private void validateRegisterEnterprise(RegEnterprise.regEnterprise request) {
         if (enterpriseRepository.existsByEnterpriseName(request.getEnterpriseName())
-        && enterpriseRepository.existsByEnterpriseAddress(request.getEnterpriseAddress()))
+                && enterpriseRepository.existsByEnterpriseAddress(request.getEnterpriseAddress()))
             throw new EnterpriseException(ErrorCode.ALREADY_EXISTS_ENTERPRISE);
     }
 
@@ -57,5 +58,27 @@ public class EnterpriseService {
             throw new EnterpriseException(ErrorCode.EXISTS_RESERVED_USER);
         }
 
+    }
+
+    public InquireEnterprise inquire(String enterprise) {
+        EnterpriseEntity enterpriseEntity = validateInquireEnterprise(enterprise);
+
+        return InquireEnterprise.builder()
+                .enterpriseName(enterpriseEntity.getEnterpriseName())
+                .enterpriseAddress(enterpriseEntity.getEnterpriseAddress())
+                .reservedUser(enterpriseEntity.getReservedUser())
+                .build();
+    }
+
+    private EnterpriseEntity validateInquireEnterprise(String enterprise) {
+
+        EnterpriseEntity enterpriseEntity = enterpriseRepository.findByEnterpriseName(enterprise)
+                .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+
+        if (!enterpriseEntity.isAdminApprovalYn()) {
+            throw new EnterpriseException(ErrorCode.SUSPENDED_ENTERPRISE);
+        }
+
+        return enterpriseEntity;
     }
 }

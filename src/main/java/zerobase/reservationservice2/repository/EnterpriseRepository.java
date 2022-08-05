@@ -14,4 +14,6 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity, Lo
     boolean existsByEnterpriseName(String enterpriseName);
 
     Optional<EnterpriseEntity> findByUserIdAndEnterpriseName(String userId, String enterpriseName);
+
+    void deleteByUserId(String userId);
 }

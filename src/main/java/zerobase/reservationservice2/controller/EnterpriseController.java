@@ -19,7 +19,8 @@ public class EnterpriseController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/regis")
-    public ResponseEntity<?> register(@RequestBody RegEnterprise.regEnterprise request, Authentication authentication) {
+    public ResponseEntity<?> register(@RequestBody RegEnterprise.regEnterprise request
+            , Authentication authentication) {
 
         var result = enterpriseService.register(request, authentication.getName());
 
@@ -28,9 +29,11 @@ public class EnterpriseController {
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/unregis")
-    public boolean unRegister(@RequestBody RegEnterprise.unRegEnterprise request, Authentication authentication) {
+    public boolean unRegister(@RequestBody RegEnterprise.unRegEnterprise request
+            , Authentication authentication) {
 
         return enterpriseService.unRegister(request, authentication.getName());
 
     }
+    
 }

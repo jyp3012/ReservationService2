@@ -1,2 +1,9 @@
-package zerobase.reservationservice2.service;public class EnterpriseService {
+package zerobase.reservationservice2.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class EnterpriseService {
 }

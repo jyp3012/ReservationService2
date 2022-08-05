@@ -1,8 +1,8 @@
 package zerobase.reservationservice2.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +11,7 @@ import zerobase.reservationservice2.model.Auth;
 import zerobase.reservationservice2.security.TokenProvider;
 import zerobase.reservationservice2.service.MemberService;
 
+@Slf4j
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor

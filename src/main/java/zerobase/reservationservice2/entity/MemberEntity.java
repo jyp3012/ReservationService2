@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +48,7 @@ public class MemberEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.getUserId();
     }
 
     @Override

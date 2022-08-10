@@ -35,7 +35,7 @@ public class ReservationController {
 
         return reservationService.unReservation(request, auth.getName());
     }
-    
+
     @GetMapping("")
     public List<ReservationEntity> findAll(Authentication auth
             ,@PageableDefault(size = 10) Pageable pageable) {

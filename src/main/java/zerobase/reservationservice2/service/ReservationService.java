@@ -33,6 +33,10 @@ public class ReservationService {
     public List<ReservationEntity> findAll(String userId, Pageable pageable) {
         return reservationRepository.findByUserIdOrderByApprovalDate(userId, pageable);
     }
+    public List<ReservationEntity> listUp(String name) {
+
+        return reservationRepository.findListByUserId(name);
+    }
 
     @Transactional
     public ReservationEntity reservation(Reservation.reserve request, String userId) {
@@ -118,10 +122,5 @@ public class ReservationService {
             throw new ReservationException(ErrorCode.TOO_CLOSE_RESERVATION_DATE);
         }
 
-    }
-
-    public List<ReservationEntity> listUp(String name) {
-
-        return reservationRepository.findListByUserId(name);
     }
 }

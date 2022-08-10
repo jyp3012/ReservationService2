@@ -18,5 +18,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Transactional
     void deleteById(Long id);
 
+    List<ReservationEntity> findListByUserId(String userId);
+
     List<ReservationEntity> findByUserIdOrderByApprovalDate(String userId, Pageable pageable);
 }

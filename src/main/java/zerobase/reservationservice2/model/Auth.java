@@ -2,6 +2,7 @@ package zerobase.reservationservice2.model;
 
 import lombok.Data;
 import zerobase.reservationservice2.entity.MemberEntity;
+import zerobase.reservationservice2.security.Authority;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +21,6 @@ public class Auth {
         private String userName;
         private String userPassword;
         private String userPhoneNumber;
-        private String roles;
 
         public MemberEntity toEntity() {
             return MemberEntity.builder()
@@ -28,7 +28,7 @@ public class Auth {
                     .userName(this.userName)
                     .userPassword(this.userPassword)
                     .userPhoneNumber(this.userPhoneNumber)
-                    .roles(this.roles)
+                    .roles(Authority.ROLE_GUEST.toString())
                     .regDt(LocalDateTime.now())
                     .build();
         }

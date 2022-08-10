@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,12 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
     private final EnterpriseRepository enterpriseRepository;
+
+    private final Long FULL_RESERVATION_USER = 5L;
+
+    public List<ReservationEntity> findAll(String userId, Pageable pageable) {
+        return reservationRepository.findByUserIdOrderByApprovalDate(userId, pageable);
+    }
 
     @Transactional
     public ReservationEntity reservation(Reservation.reserve request, String userId) {
@@ -59,7 +66,7 @@ public class ReservationService {
                 .build();
     }
     private void validateReservation(MemberEntity member, EnterpriseEntity enterprise) {
-        if (enterprise.getReservedUser() >= 5) {
+        if (enterprise.getReservedUser() >= FULL_RESERVATION_USER.floatValue()) {
             throw new EnterpriseException(ErrorCode.FULL_RESERVE_USER);
         }
     }

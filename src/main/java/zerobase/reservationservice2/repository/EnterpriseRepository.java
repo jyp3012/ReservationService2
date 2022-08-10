@@ -2,6 +2,7 @@ package zerobase.reservationservice2.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
 
 import java.util.Optional;
@@ -17,5 +18,6 @@ public interface EnterpriseRepository extends JpaRepository<EnterpriseEntity, Lo
 
     Optional<EnterpriseEntity> findByEnterpriseName(String enterpriseName);
 
+    @Transactional
     void deleteByUserId(String userId);
 }

@@ -10,9 +10,6 @@ import zerobase.reservationservice2.model.InquireEnterprise;
 import zerobase.reservationservice2.model.RegEnterprise;
 import zerobase.reservationservice2.repository.EnterpriseRepository;
 
-import java.security.Principal;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class EnterpriseService {
@@ -51,7 +48,7 @@ public class EnterpriseService {
                 .orElseThrow(() -> new EnterpriseException(ErrorCode.UN_MATH_USERID_ADDRESS));
 
         if (!enterprise.getEnterprisePassword().equals(request.getEnterprisePassword())) {
-            throw new EnterpriseException(ErrorCode.UN_MATH_ENTERPRISE_PASSWORD);
+            throw new EnterpriseException(ErrorCode.UN_MATH_PASSWORD);
         }
 
         if (!enterprise.getReservedUser().equals(NOT_EXISTS_USER)) {

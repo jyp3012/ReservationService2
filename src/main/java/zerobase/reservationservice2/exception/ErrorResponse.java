@@ -1,4 +1,4 @@
-package zerobase.reservationservice2.model;
+package zerobase.reservationservice2.exception;
 
 import lombok.*;
 import zerobase.reservationservice2.exception.ErrorCode;

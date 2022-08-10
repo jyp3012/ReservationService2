@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -28,6 +29,7 @@ public class EnterpriseEntity {
     private String enterpriseAddress;
 
     @NotNull
+    @Size(min = 4, max = 4)
     private String enterprisePassword;
 
     private Long reservedUser;

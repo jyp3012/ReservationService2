@@ -51,6 +51,10 @@ public class MemberEntity implements UserDetails {
         return this.getUserId();
     }
 
+    public String getUserFullName() {
+        return this.userName;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return false;

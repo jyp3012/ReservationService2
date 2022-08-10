@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**/singup", "/**/signin").permitAll()
+                .antMatchers("/**/signup", "/**/signin").permitAll()
                 .and()
                 .addFilterBefore(authenticationFilter ,UsernamePasswordAuthenticationFilter.class);
 

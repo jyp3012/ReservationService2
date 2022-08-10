@@ -5,12 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import zerobase.reservationservice2.entity.EnterpriseEntity;
 import zerobase.reservationservice2.model.InquireEnterprise;
 import zerobase.reservationservice2.model.RegEnterprise;
 import zerobase.reservationservice2.service.EnterpriseService;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/enterprise")

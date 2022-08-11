@@ -3,10 +3,7 @@ package zerobase.reservationservice2.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import zerobase.reservationservice2.model.Auth;
 import zerobase.reservationservice2.security.TokenProvider;
 import zerobase.reservationservice2.service.MemberService;
@@ -37,6 +34,12 @@ public class MemberController {
 
 
         return ResponseEntity.ok(token);
+    }
+
+    @GetMapping("/email-auth")
+    public boolean emailAuth(@RequestParam(value = "id", required = false)String uuid) {
+
+        return memberService.emailAuth(uuid);
     }
 
 

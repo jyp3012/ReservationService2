@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -27,6 +28,7 @@ public class MemberEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Email
     private String userId;
     private String userName;
     private String userPassword;
@@ -35,6 +37,13 @@ public class MemberEntity implements UserDetails {
     private String roles;
 
     private LocalDateTime regDt;
+
+    private boolean emailAuthYn;
+    private String emailAuthKey;
+    private LocalDateTime emailAuthDt;
+
+    private String resetPasswordKey;
+    private LocalDateTime restPasswordLimitDt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -14,3 +14,14 @@ spring:
   jwt:
     secret: ZGF5b25lLXNwcmluZy1ib290LXJlc2VydmF0aW9uLXByb2plY3Qtand0LXNlY3JldC10b2tlbgo
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ppp0868@gmail.com
+    password: ygxksmfjccjncyka
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+

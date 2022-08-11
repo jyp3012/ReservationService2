@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
+import zerobase.reservationservice2.entity.MemberEntity;
 import zerobase.reservationservice2.entity.ReservationEntity;
 import zerobase.reservationservice2.service.AdminService;
 
@@ -31,6 +32,20 @@ public class AdminController {
     public List<ReservationEntity> suspensionEnterprise(String enterpriseName) {
 
         return adminService.suspensionEnterprise(enterpriseName);
+    }
+
+    @PostMapping("/member/approval")
+    @PreAuthorize("hasRole('ADMIN')")
+    public MemberEntity approvalMember(String userId) {
+
+        return adminService.approvalMember(userId);
+    }
+
+    @PostMapping("/member/suspension")
+    @PreAuthorize("hasRole('ADMIN')")
+    public MemberEntity suspensionMember(String userId) {
+
+        return adminService.suspensionMember(userId);
     }
 
 }

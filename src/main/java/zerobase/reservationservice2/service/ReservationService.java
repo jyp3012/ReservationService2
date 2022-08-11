@@ -16,6 +16,7 @@ import zerobase.reservationservice2.repository.EnterpriseRepository;
 import zerobase.reservationservice2.repository.MemberRepository;
 import zerobase.reservationservice2.repository.ReservationRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -49,26 +50,15 @@ public class ReservationService {
 
         validateReservation(member, enterprise);
 
-        EnterpriseEntity entity = increaseReservedUser(enterprise);
+        Long changeReservedUser = enterprise.getReservedUser() + 1L;
 
-        var result = reservationRepository.save(request.toEntity(member, entity));
+        enterpriseRepository.updaterReservedUser(changeReservedUser, enterprise.getEnterpriseName());
+
+        var result = reservationRepository.save(request.toEntity(member, enterprise));
 
         return result;
     }
 
-    private EnterpriseEntity increaseReservedUser(EnterpriseEntity enterprise) {
-        Long reservedUser = enterprise.getReservedUser() + 1L;
-
-        return EnterpriseEntity.builder()
-                .enterpriseName(enterprise.getEnterpriseName())
-                .enterprisePassword(enterprise.getEnterprisePassword())
-                .enterpriseAddress(enterprise.getEnterpriseAddress())
-                .reservedUser(reservedUser)
-                .userId(enterprise.getUserId())
-                .regDt(enterprise.getRegDt())
-                .adminApprovalYn(enterprise.isAdminApprovalYn())
-                .build();
-    }
     private void validateReservation(MemberEntity member, EnterpriseEntity enterprise) {
         if (enterprise.getReservedUser() >= FULL_RESERVATION_USER.floatValue()) {
             throw new EnterpriseException(ErrorCode.FULL_RESERVE_USER);
@@ -89,26 +79,15 @@ public class ReservationService {
         EnterpriseEntity enterprise = enterpriseRepository.findByEnterpriseName(request.getEnterpriseName())
                 .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
-        EnterpriseEntity entity = decreaseReservedUser(enterprise);
+        Long changeReservedUser = enterprise.getReservedUser() - 1L;
+
+        enterpriseRepository.updaterReservedUser(changeReservedUser, enterprise.getEnterpriseName());
 
         reservationRepository.deleteById(reservation.getId());
 
         return true;
     }
 
-    private EnterpriseEntity decreaseReservedUser(EnterpriseEntity enterprise) {
-        Long reservedUser = enterprise.getReservedUser() - 1L;
-
-        return EnterpriseEntity.builder()
-                .enterpriseName(enterprise.getEnterpriseName())
-                .enterprisePassword(enterprise.getEnterprisePassword())
-                .enterpriseAddress(enterprise.getEnterpriseAddress())
-                .reservedUser(reservedUser)
-                .userId(enterprise.getUserId())
-                .regDt(enterprise.getRegDt())
-                .adminApprovalYn(enterprise.isAdminApprovalYn())
-                .build();
-    }
 
     private void validateUnReservation(Reservation.unReserve request, MemberEntity member, ReservationEntity reservation) {
         if (!member.getUserId().equals(reservation.getUserId())) {
@@ -118,7 +97,7 @@ public class ReservationService {
             throw new ReservationException(ErrorCode.UN_MATH_PASSWORD);
         }
 
-        if (ChronoUnit.DAYS.between(LocalDateTime.now(), reservation.getUserReservedDate()) <= 3) {
+        if (ChronoUnit.DAYS.between(LocalDate.now(), reservation.getUserReservedDate()) <= 3) {
             throw new ReservationException(ErrorCode.TOO_CLOSE_RESERVATION_DATE);
         }
 

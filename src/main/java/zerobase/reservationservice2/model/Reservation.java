@@ -6,6 +6,7 @@ import zerobase.reservationservice2.entity.EnterpriseEntity;
 import zerobase.reservationservice2.entity.MemberEntity;
 import zerobase.reservationservice2.entity.ReservationEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Reservation {
@@ -15,7 +16,7 @@ public class Reservation {
         private String reservationPassword;
         private String enterpriseName;
         @JsonFormat(pattern = "yyyy-MM-dd")
-        private LocalDateTime userReservedDate;
+        private LocalDate userReservedDate;
 
         public ReservationEntity toEntity(MemberEntity member, EnterpriseEntity enterprise){
             return ReservationEntity.builder()

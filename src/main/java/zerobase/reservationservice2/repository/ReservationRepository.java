@@ -15,8 +15,13 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     Optional<ReservationEntity> findByEnterpriseName(String enterpriseName);
 
+    List<ReservationEntity> findListByEnterpriseName(String enterpriseName);
+
     @Transactional
     void deleteById(Long id);
+
+    @Transactional
+    void deleteAllByEnterpriseName(String enterpriseName);
 
     List<ReservationEntity> findListByUserId(String userId);
 

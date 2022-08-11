@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,11 +9,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zerobase.reservationservice2.config.MailConfig;
 import zerobase.reservationservice2.entity.MemberEntity;
+import zerobase.reservationservice2.exception.ErrorCode;
+import zerobase.reservationservice2.exception.MemberException;
 import zerobase.reservationservice2.model.Auth;
+import zerobase.reservationservice2.model.ResetPassword;
 import zerobase.reservationservice2.repository.MemberRepository;
 import zerobase.reservationservice2.security.Authority;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import java.util.UUID;
 
 import static zerobase.reservationservice2.security.Authority.ROLE_GUEST;
 import static zerobase.reservationservice2.security.Authority.ROLE_USER;
@@ -24,6 +31,8 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final MailConfig mailConfig;
+
+    private final LocalDateTime LIMIT_PASSWORD_DATE = LocalDateTime.now().plusDays(1);
 
 
     @Override
@@ -65,13 +74,53 @@ public class MemberService implements UserDetailsService {
 
     public boolean emailAuth(String uuid) {
 
-        Optional<MemberEntity> member = memberRepository.findByEmailAuthKey(uuid);
+        MemberEntity member = memberRepository.findByEmailAuthKey(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
 
-        if (member.isEmpty()) {
-            return false;
-        }
+        validateEmailAuth(member);
 
         memberRepository.emailUpdaterMemberRole(ROLE_USER.toString(), uuid);
+
+        return true;
+    }
+
+    private void validateEmailAuth(MemberEntity member) {
+        if (ChronoUnit.DAYS.between(member.getEmailAuthDt(), LocalDateTime.now()) > 1) {
+            throw new MemberException(ErrorCode.OVER_DATE_TO_EMAIL);
+        }
+    }
+
+    public boolean sendRestPasswordEmail(ResetPassword resetPassword) {
+
+        MemberEntity member = memberRepository.findByUserId(resetPassword.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 없습니다"));
+
+        if (!member.getUserFullName().equals(resetPassword.getUserName())) {
+            throw new MemberException(ErrorCode.UN_MATCH_USERID_USERNAME);
+        }
+
+        String uuid = UUID.randomUUID().toString();
+
+        memberRepository.resetPasswordUuid(member.getUserId(), uuid);
+
+        memberRepository.resetPasswordDt(LIMIT_PASSWORD_DATE, uuid);
+
+        String email = resetPassword.getUserId();
+        String subject = "비밀번호 초기화 메일 입니다..";
+        String text = "<p>비밀번호 초기화 메일 입니다.</p><p> 아래 링크를 클릭해서 비밀번호 초기화를 진행 해주세요..</p>"
+                + "<div><a target ='_black' href = 'http://localhost:8080/member/reset/password?id=" + uuid + "'> 초기화</a></div>";
+
+        mailConfig.sendMail(email, subject, text);
+
+        return true;
+    }
+
+    public boolean resetPassword(String uuid, String password) {
+
+        MemberEntity member = memberRepository.findByResetPasswordKey(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+
+        memberRepository.updatePassword(passwordEncoder.encode(password), uuid);
 
         return true;
     }

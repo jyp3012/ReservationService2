@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**/signup", "/**/signin").permitAll()
+                .antMatchers("/**/forgot/**, /**/reset/**").permitAll()
                 .and()
                 .addFilterBefore(authenticationFilter ,UsernamePasswordAuthenticationFilter.class);
 

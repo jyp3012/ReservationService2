@@ -38,7 +38,6 @@ public class MemberEntity implements UserDetails {
 
     private LocalDateTime regDt;
 
-    private boolean emailAuthYn;
     private String emailAuthKey;
     private LocalDateTime emailAuthDt;
 

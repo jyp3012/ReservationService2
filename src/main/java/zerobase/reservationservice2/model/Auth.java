@@ -30,9 +30,9 @@ public class Auth {
                     .userName(this.userName)
                     .userPassword(this.userPassword)
                     .userPhoneNumber(this.userPhoneNumber)
-                    .emailAuthYn(false)
                     .emailAuthKey(uuid)
                     .roles(Authority.ROLE_GUEST.toString())
+                    .emailAuthDt(LocalDateTime.now())
                     .regDt(LocalDateTime.now())
                     .build();
         }

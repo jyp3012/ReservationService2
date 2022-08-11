@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zerobase.reservationservice2.model.Auth;
+import zerobase.reservationservice2.model.ResetPassword;
 import zerobase.reservationservice2.security.TokenProvider;
 import zerobase.reservationservice2.service.MemberService;
 
@@ -40,6 +41,20 @@ public class MemberController {
     public boolean emailAuth(@RequestParam(value = "id", required = false)String uuid) {
 
         return memberService.emailAuth(uuid);
+    }
+
+    @PostMapping("/forgot/password")
+    public boolean forgotPassword(@RequestBody ResetPassword resetPassword) {
+
+        return memberService.sendRestPasswordEmail(resetPassword);
+    }
+
+    @PostMapping("/reset/password")
+    public boolean ResetPassword(@RequestParam(value = "id", required = false)String uuid,
+                                     @RequestBody String password) {
+
+        return memberService.resetPassword(uuid, password);
+
     }
 
 

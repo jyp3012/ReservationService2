@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
@@ -10,6 +11,7 @@ import zerobase.reservationservice2.model.InquireEnterprise;
 import zerobase.reservationservice2.model.RegEnterprise;
 import zerobase.reservationservice2.repository.EnterpriseRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EnterpriseService {
@@ -23,6 +25,8 @@ public class EnterpriseService {
         validateRegisterEnterprise(request);
 
         var result = enterpriseRepository.save(request.toEntity(userId));
+
+        log.info("EnterpriseName : " + result.getEnterpriseName() + "업체 등록 완료");
 
         return result;
     }
@@ -38,6 +42,8 @@ public class EnterpriseService {
         validateUnRegisterEnterprise(request, userId);
 
         enterpriseRepository.deleteByUserId(userId);
+
+        log.info("EnterpriseName : " + request.getEnterpriseName() + "업체 등록 취소 완료");
 
         return true;
     }

@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ import zerobase.reservationservice2.repository.MemberRepository;
 import zerobase.reservationservice2.repository.ReservationRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
@@ -56,6 +57,8 @@ public class ReservationService {
 
         var result = reservationRepository.save(request.toEntity(member, enterprise));
 
+        log.info("userId : " + member.getUserId() + ", EnterpriseName : " + enterprise.getEnterpriseName() + "예약 완료");
+
         return result;
     }
 
@@ -84,6 +87,8 @@ public class ReservationService {
         enterpriseRepository.updaterReservedUser(changeReservedUser, enterprise.getEnterpriseName());
 
         reservationRepository.deleteById(reservation.getId());
+
+        log.info("userId : " + member.getUserId() + ", EnterpriseName : " + enterprise.getEnterpriseName() + "예약 취소");
 
         return true;
     }

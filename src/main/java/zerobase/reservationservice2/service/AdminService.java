@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 import static zerobase.reservationservice2.security.Authority.ROLE_GUEST;
 import static zerobase.reservationservice2.security.Authority.ROLE_USER;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -40,6 +42,8 @@ public class AdminService {
             reservationRepository.deleteAllByEnterpriseName(enterpriseName);
         }
 
+        log.info("EnterpriseName : " + enterprise.getEnterpriseName() + "권한 정지");
+
         return reservationEntityList;
     }
 
@@ -49,6 +53,8 @@ public class AdminService {
                 .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         enterpriseRepository.updaterApprovalAdmin(true, enterpriseName);
+
+        log.info("EnterpriseName : " + enterprise.getEnterpriseName() + "권한 승인");
 
         return enterprise;
     }
@@ -60,6 +66,8 @@ public class AdminService {
 
         memberRepository.updaterMemberRole(ROLE_USER.toString(), userId);
 
+        log.info("userId : " + member.getUserId() + "유저 권한 승인");
+
         return member;
     }
 
@@ -69,6 +77,8 @@ public class AdminService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
 
         memberRepository.updaterMemberRole(ROLE_GUEST.toString(), userId);
+
+        log.info("userId : " + member.getUserId() + "유저 권한 정지");
 
         return member;
     }

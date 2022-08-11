@@ -1,7 +1,7 @@
 package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,16 +14,14 @@ import zerobase.reservationservice2.exception.MemberException;
 import zerobase.reservationservice2.model.Auth;
 import zerobase.reservationservice2.model.ResetPassword;
 import zerobase.reservationservice2.repository.MemberRepository;
-import zerobase.reservationservice2.security.Authority;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.UUID;
 
-import static zerobase.reservationservice2.security.Authority.ROLE_GUEST;
 import static zerobase.reservationservice2.security.Authority.ROLE_USER;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
@@ -57,6 +55,7 @@ public class MemberService implements UserDetailsService {
                 + "<div><a target ='_black' href = 'http://localhost:8080/member/email-auth?id=" + member.getUuid() + "'> 가입 완료</a></div>";
 
         mailConfig.sendMail(email, subject, text);
+        log.info("userId : " + member.getUserId() + "회원가입 완료");
 
         return result;
     }
@@ -121,6 +120,7 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
 
         memberRepository.updatePassword(passwordEncoder.encode(password), uuid);
+        log.info("userId : " + member.getUserId() + "비밀번호 초기화 완료");
 
         return true;
     }

@@ -10,7 +10,8 @@
 
 ### DB Table 구성
 
-<img width="1502" alt="스크린샷 2022-08-05 오후 9 59 54" src="https://user-images.githubusercontent.com/88446304/183082490-a8f0bdee-b182-4dea-9721-e4342ca38be5.png">
+<img width="1129" alt="스크린샷 2022-08-16 오후 1 53 04" src="https://user-images.githubusercontent.com/88446304/184800609-f41bef75-16c6-49ac-aedb-48db5c85c970.png">
+
 ### 사용 기술스택
 
 - Spring boot

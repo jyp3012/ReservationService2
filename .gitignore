@@ -39,3 +39,5 @@ out/
 application.yml
 
 logs
+.gitignore
+src/main/java/zerobase/reservationservice2/security/SecurityConfig.java

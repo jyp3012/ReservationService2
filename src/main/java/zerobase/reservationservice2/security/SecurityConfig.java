@@ -35,6 +35,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+//     권한 관리는 제한을 걸고 싶은 API 에
+//    @PreAuthorize("hasAnyRole("WRITE")") 와 같은 어노테이션을 붙여서 관리한다.
+
 
     // 개발 관련 url
     @Bean

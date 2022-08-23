@@ -25,5 +25,5 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     List<ReservationEntity> findListByUserId(String userId);
 
-    List<ReservationEntity> findByUserIdOrderByApprovalDate(String userId, Pageable pageable);
+    Page<ReservationEntity> findByUserIdOrderByApprovalDate(String userId, Pageable pageable);
 }

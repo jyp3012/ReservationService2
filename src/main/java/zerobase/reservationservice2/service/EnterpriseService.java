@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
-import zerobase.reservationservice2.exception.EnterpriseException;
+import zerobase.reservationservice2.exception.CustomTotalException;
 import zerobase.reservationservice2.exception.ErrorCode;
 import zerobase.reservationservice2.model.InquireEnterprise;
 import zerobase.reservationservice2.model.RegEnterprise;
@@ -34,7 +34,7 @@ public class EnterpriseService {
     private void validateRegisterEnterprise(RegEnterprise.regEnterprise request) {
         if (enterpriseRepository.existsByEnterpriseName(request.getEnterpriseName())
                 && enterpriseRepository.existsByEnterpriseAddress(request.getEnterpriseAddress()))
-            throw new EnterpriseException(ErrorCode.ALREADY_EXISTS_ENTERPRISE);
+            throw new CustomTotalException(ErrorCode.ALREADY_EXISTS_ENTERPRISE);
     }
 
     @Transactional
@@ -51,14 +51,14 @@ public class EnterpriseService {
     private void validateUnRegisterEnterprise(RegEnterprise.unRegEnterprise request, String userId) {
         EnterpriseEntity enterprise = enterpriseRepository
                 .findByUserIdAndEnterpriseName(userId, request.getEnterpriseName())
-                .orElseThrow(() -> new EnterpriseException(ErrorCode.UN_MATH_USERID_ADDRESS));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.UN_MATH_USERID_ADDRESS));
 
         if (!enterprise.getEnterprisePassword().equals(request.getEnterprisePassword())) {
-            throw new EnterpriseException(ErrorCode.UN_MATH_PASSWORD);
+            throw new CustomTotalException(ErrorCode.UN_MATH_PASSWORD);
         }
 
         if (!enterprise.getReservedUser().equals(NOT_EXISTS_USER)) {
-            throw new EnterpriseException(ErrorCode.EXISTS_RESERVED_USER);
+            throw new CustomTotalException(ErrorCode.EXISTS_RESERVED_USER);
         }
 
     }
@@ -76,10 +76,10 @@ public class EnterpriseService {
     private EnterpriseEntity validateInquireEnterprise(String enterprise) {
 
         EnterpriseEntity enterpriseEntity = enterpriseRepository.findByEnterpriseName(enterprise)
-                .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         if (!enterpriseEntity.isAdminApprovalYn()) {
-            throw new EnterpriseException(ErrorCode.SUSPENDED_ENTERPRISE);
+            throw new CustomTotalException(ErrorCode.SUSPENDED_ENTERPRISE);
         }
 
         return enterpriseEntity;

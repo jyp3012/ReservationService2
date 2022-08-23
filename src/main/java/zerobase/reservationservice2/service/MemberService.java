@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zerobase.reservationservice2.config.MailConfig;
 import zerobase.reservationservice2.entity.MemberEntity;
+import zerobase.reservationservice2.exception.CustomTotalException;
 import zerobase.reservationservice2.exception.ErrorCode;
-import zerobase.reservationservice2.exception.MemberException;
 import zerobase.reservationservice2.model.Auth;
 import zerobase.reservationservice2.model.ResetPassword;
 import zerobase.reservationservice2.repository.MemberRepository;
@@ -30,13 +30,14 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final MailConfig mailConfig;
 
+    private final int EMAIL_VALID_DAY = 1;
     private final LocalDateTime LIMIT_PASSWORD_DATE = LocalDateTime.now().plusDays(1);
 
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         return memberRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("회원 가입 되어 있지 않은 ID입니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 ID 입니다."));
     }
 
 
@@ -44,7 +45,7 @@ public class MemberService implements UserDetailsService {
         boolean exists = memberRepository.existsByUserId(member.getUserId());
 
         if (exists) {
-            throw new RuntimeException("이미 사용 중인 ID 입니다.");
+            throw new CustomTotalException(ErrorCode.ALREADY_EXISTS_USER);
         }
         member.setUserPassword(passwordEncoder.encode(member.getUserPassword()));
         var result = memberRepository.save(member.toEntity());
@@ -62,10 +63,10 @@ public class MemberService implements UserDetailsService {
 
     public MemberEntity authenticate(Auth.SignIn member) {
         var user = memberRepository.findByUserId(member.getUserId())
-                .orElseThrow(() -> new RuntimeException("존재 하지 않는 ID 입니다"));
+                .orElseThrow(() -> new UsernameNotFoundException("존재 하지 않는 ID 입니다"));
 
         if(!passwordEncoder.matches(member.getUserPassword(), user.getUserPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new CustomTotalException(ErrorCode.UN_MATH_PASSWORD);
         }
 
         return user;
@@ -84,8 +85,8 @@ public class MemberService implements UserDetailsService {
     }
 
     private void validateEmailAuth(MemberEntity member) {
-        if (ChronoUnit.DAYS.between(member.getEmailAuthDt(), LocalDateTime.now()) > 1) {
-            throw new MemberException(ErrorCode.OVER_DATE_TO_EMAIL);
+        if (ChronoUnit.DAYS.between(member.getEmailAuthDt(), LocalDateTime.now()) > EMAIL_VALID_DAY) {
+            throw new CustomTotalException(ErrorCode.OVER_DATE_TO_EMAIL);
         }
     }
 
@@ -94,15 +95,34 @@ public class MemberService implements UserDetailsService {
         MemberEntity member = memberRepository.findByUserId(resetPassword.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 없습니다"));
 
-        if (!member.getUserFullName().equals(resetPassword.getUserName())) {
-            throw new MemberException(ErrorCode.UN_MATCH_USERID_USERNAME);
-        }
+        validateSendRestPasswordEmail(resetPassword, member);
 
+        String uuid = changePassword(resetPassword, member);
+
+        resetPasswordMailSend(resetPassword, uuid);
+
+        return true;
+    }
+
+    private void validateSendRestPasswordEmail(ResetPassword resetPassword, MemberEntity member) {
+
+        if (!member.getUserFullName().equals(resetPassword.getUserName())) {
+            throw new CustomTotalException(ErrorCode.UN_MATCH_USERID_USERNAME);
+        }
+    }
+    
+    private String changePassword(ResetPassword resetPassword, MemberEntity member) {
+        
         String uuid = UUID.randomUUID().toString();
 
         memberRepository.resetPasswordUuid(member.getUserId(), uuid);
 
         memberRepository.resetPasswordDt(LIMIT_PASSWORD_DATE, uuid);
+
+        return uuid;
+    }
+
+    private void resetPasswordMailSend(ResetPassword resetPassword, String uuid) {
 
         String email = resetPassword.getUserId();
         String subject = "비밀번호 초기화 메일 입니다..";
@@ -110,8 +130,6 @@ public class MemberService implements UserDetailsService {
                 + "<div><a target ='_black' href = 'http://localhost:8080/member/reset/password?id=" + uuid + "'> 초기화</a></div>";
 
         mailConfig.sendMail(email, subject, text);
-
-        return true;
     }
 
     public boolean resetPassword(String uuid, String password) {

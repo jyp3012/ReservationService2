@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class ReservationController {
     }
 
     @GetMapping("")
-    public List<ReservationEntity> findAll(Authentication auth
-            ,@PageableDefault(size = 10) Pageable pageable) {
+    public Page<ReservationEntity> findAll(Authentication auth
+            , @PageableDefault Pageable pageable) {
 
         return reservationService.findAll(auth.getName(), pageable);
     }

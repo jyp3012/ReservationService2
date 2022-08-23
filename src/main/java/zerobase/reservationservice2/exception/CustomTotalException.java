@@ -1,5 +1,6 @@
 package zerobase.reservationservice2.exception;
 
+
 import lombok.*;
 
 @Getter
@@ -7,13 +8,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberException extends RuntimeException{
+public class CustomTotalException extends RuntimeException {
     private ErrorCode errorCode;
 
     private String errorMessage;
 
-    public MemberException(ErrorCode errorCode) {
+    public CustomTotalException(ErrorCode errorCode) {
         this.errorCode = errorCode;
         this.errorMessage = errorCode.getDescription();
     }
+
 }

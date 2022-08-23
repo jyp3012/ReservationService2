@@ -25,6 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/src/main/resources/application.yml
 
 ### NetBeans ###
 /nbproject/private/
@@ -36,7 +37,6 @@ out/
 ### VS Code ###
 .vscode/
 
-application.yml
 
 logs
 .gitignore

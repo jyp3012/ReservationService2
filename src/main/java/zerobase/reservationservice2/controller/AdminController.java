@@ -1,6 +1,7 @@
 package zerobase.reservationservice2.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,14 +37,14 @@ public class AdminController {
 
     @PostMapping("/member/approval")
     @PreAuthorize("hasRole('ADMIN')")
-    public MemberEntity approvalMember(String userId) {
+    public String approvalMember(String userId) {
 
         return adminService.approvalMember(userId);
     }
 
     @PostMapping("/member/suspension")
     @PreAuthorize("hasRole('ADMIN')")
-    public MemberEntity suspensionMember(String userId) {
+    public String suspensionMember(String userId) {
 
         return adminService.suspensionMember(userId);
     }

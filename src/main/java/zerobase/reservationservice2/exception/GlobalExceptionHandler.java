@@ -8,23 +8,8 @@ import zerobase.reservationservice2.model.Reservation;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(EnterpriseException.class)
-    public ErrorResponse handleEnterpriseException(EnterpriseException e) {
-        log.error("{} is occurred", e.getErrorCode());
-
-        return new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
-    }
-
-    @ExceptionHandler(ReservationException.class)
-    public ErrorResponse handleReservationException(ReservationException e) {
-        log.error("{} is occurred", e.getErrorCode());
-
-        return new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
-    }
-
-    @ExceptionHandler(MemberException.class)
-    public ErrorResponse handleReservationException(MemberException e) {
+    @ExceptionHandler(CustomTotalException.class)
+    public ErrorResponse handleException(CustomTotalException e) {
         log.error("{} is occurred", e.getErrorCode());
 
         return new ErrorResponse(e.getErrorCode(), e.getErrorMessage());

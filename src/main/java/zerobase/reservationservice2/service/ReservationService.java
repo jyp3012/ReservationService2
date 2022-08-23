@@ -2,6 +2,7 @@ package zerobase.reservationservice2.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -9,9 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
 import zerobase.reservationservice2.entity.MemberEntity;
 import zerobase.reservationservice2.entity.ReservationEntity;
-import zerobase.reservationservice2.exception.EnterpriseException;
+import zerobase.reservationservice2.exception.CustomTotalException;
 import zerobase.reservationservice2.exception.ErrorCode;
-import zerobase.reservationservice2.exception.ReservationException;
 import zerobase.reservationservice2.model.Reservation;
 import zerobase.reservationservice2.repository.EnterpriseRepository;
 import zerobase.reservationservice2.repository.MemberRepository;
@@ -32,7 +32,7 @@ public class ReservationService {
 
     private final Long FULL_RESERVATION_USER = 5L;
 
-    public List<ReservationEntity> findAll(String userId, Pageable pageable) {
+    public Page<ReservationEntity> findAll(String userId, Pageable pageable) {
         return reservationRepository.findByUserIdOrderByApprovalDate(userId, pageable);
     }
     public List<ReservationEntity> listUp(String name) {
@@ -47,7 +47,7 @@ public class ReservationService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 ID가 없습니다."));
 
         EnterpriseEntity enterprise = enterpriseRepository.findByEnterpriseName(request.getEnterpriseName())
-                .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         validateReservation(member, enterprise);
 
@@ -64,7 +64,7 @@ public class ReservationService {
 
     private void validateReservation(MemberEntity member, EnterpriseEntity enterprise) {
         if (enterprise.getReservedUser() >= FULL_RESERVATION_USER.floatValue()) {
-            throw new EnterpriseException(ErrorCode.FULL_RESERVE_USER);
+            throw new CustomTotalException(ErrorCode.FULL_RESERVE_USER);
         }
     }
 
@@ -75,12 +75,12 @@ public class ReservationService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 ID가 없습니다."));
 
         ReservationEntity reservation = reservationRepository.findByEnterpriseName(request.getEnterpriseName())
-                .orElseThrow(() -> new ReservationException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         validateUnReservation(request,member, reservation);
 
         EnterpriseEntity enterprise = enterpriseRepository.findByEnterpriseName(request.getEnterpriseName())
-                .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         Long changeReservedUser = enterprise.getReservedUser() - 1L;
 
@@ -96,14 +96,14 @@ public class ReservationService {
 
     private void validateUnReservation(Reservation.unReserve request, MemberEntity member, ReservationEntity reservation) {
         if (!member.getUserId().equals(reservation.getUserId())) {
-            throw new ReservationException(ErrorCode.UN_MATH_USERID_ADDRESS);
+            throw new CustomTotalException(ErrorCode.UN_MATH_USERID_ADDRESS);
         }
         if (!request.getReservationPassword().equals(reservation.getReservationPassword())) {
-            throw new ReservationException(ErrorCode.UN_MATH_PASSWORD);
+            throw new CustomTotalException(ErrorCode.UN_MATH_PASSWORD);
         }
 
         if (ChronoUnit.DAYS.between(LocalDate.now(), reservation.getUserReservedDate()) <= 3) {
-            throw new ReservationException(ErrorCode.TOO_CLOSE_RESERVATION_DATE);
+            throw new CustomTotalException(ErrorCode.TOO_CLOSE_RESERVATION_DATE);
         }
 
     }

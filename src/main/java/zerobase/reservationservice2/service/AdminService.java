@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 import zerobase.reservationservice2.entity.EnterpriseEntity;
 import zerobase.reservationservice2.entity.MemberEntity;
 import zerobase.reservationservice2.entity.ReservationEntity;
-import zerobase.reservationservice2.exception.EnterpriseException;
+import zerobase.reservationservice2.exception.CustomTotalException;
 import zerobase.reservationservice2.exception.ErrorCode;
 import zerobase.reservationservice2.repository.EnterpriseRepository;
 import zerobase.reservationservice2.repository.MemberRepository;
 import zerobase.reservationservice2.repository.ReservationRepository;
-import zerobase.reservationservice2.security.Authority;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class AdminService {
     public List<ReservationEntity> suspensionEnterprise(String enterpriseName) {
 
         EnterpriseEntity enterprise = enterpriseRepository.findByEnterpriseName(enterpriseName)
-                .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         enterpriseRepository.updaterApprovalAdmin(false, enterpriseName);
 
@@ -50,7 +49,7 @@ public class AdminService {
     public EnterpriseEntity approvalEnterprise(String enterpriseName) {
 
         EnterpriseEntity enterprise = enterpriseRepository.findByEnterpriseName(enterpriseName)
-                .orElseThrow(() -> new EnterpriseException(ErrorCode.NOT_EXISTS_ENTERPRISE));
+                .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
         enterpriseRepository.updaterApprovalAdmin(true, enterpriseName);
 
@@ -59,7 +58,7 @@ public class AdminService {
         return enterprise;
     }
 
-    public MemberEntity approvalMember(String userId) {
+    public String approvalMember(String userId) {
 
         MemberEntity member = memberRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
@@ -68,10 +67,10 @@ public class AdminService {
 
         log.info("userId : " + member.getUserId() + "유저 권한 승인");
 
-        return member;
+        return member.getUserId();
     }
 
-    public MemberEntity suspensionMember(String userId) {
+    public String suspensionMember(String userId) {
 
         MemberEntity member = memberRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
@@ -80,6 +79,6 @@ public class AdminService {
 
         log.info("userId : " + member.getUserId() + "유저 권한 정지");
 
-        return member;
+        return member.getUserId();
     }
 }

@@ -19,6 +19,7 @@
 - mariaDB
 - Spring Jpa
 - Spring security + JWT
+- Redis
 
 ### 프로젝트의 기능
 

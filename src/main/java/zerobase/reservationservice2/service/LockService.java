@@ -27,8 +27,10 @@ public class LockService {
             }
         }catch (CustomTotalException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             log.error("Redis lock failed");
+        } catch (Exception e) {
+            log.error("NOT_DEFINE_ERROR");
         }
     }
 

@@ -30,6 +30,8 @@ public class ReservationService {
     private final MemberRepository memberRepository;
     private final EnterpriseRepository enterpriseRepository;
 
+    private final LockService lockService;
+
     private final Long FULL_RESERVATION_USER = 5L;
 
     public Page<ReservationEntity> findAll(String userId, Pageable pageable) {
@@ -49,11 +51,17 @@ public class ReservationService {
         EnterpriseEntity enterprise = enterpriseRepository.findByEnterpriseName(request.getEnterpriseName())
                 .orElseThrow(() -> new CustomTotalException(ErrorCode.NOT_EXISTS_ENTERPRISE));
 
-        validateReservation(member, enterprise);
+        lockService.Lock(enterprise.getEnterpriseName());
+        try {
+            validateReservation(member, enterprise);
 
-        Long changeReservedUser = enterprise.getReservedUser() + 1L;
+            Long changeReservedUser = enterprise.getReservedUser() + 1L;
 
-        enterpriseRepository.updaterReservedUser(changeReservedUser, enterprise.getEnterpriseName());
+            enterpriseRepository.updaterReservedUser(changeReservedUser, enterprise.getEnterpriseName());
+
+        } finally {
+            lockService.unLock(enterprise.getEnterpriseName());
+        }
 
         var result = reservationRepository.save(request.toEntity(member, enterprise));
 
